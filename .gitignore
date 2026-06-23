@@ -18,6 +18,11 @@
 .DS_Store
 *.pem
 
+# editors / IDE
+.idea/
+.vscode/
+*.swp
+
 # debug logs
 npm-debug.log*
 yarn-debug.log*
