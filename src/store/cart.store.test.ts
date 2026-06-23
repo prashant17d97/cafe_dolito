@@ -34,4 +34,9 @@ describe("cart.store", () => {
     cart().addItem(line({ key: "b", quantity: 3 }));
     expect(selectCartCount(cart())).toBe(5);
   });
+  it("setQty floors quantity at 1", () => {
+    cart().addItem(line());
+    cart().setQty("doppio|m", 0);
+    expect(cart().items[0].quantity).toBe(1);
+  });
 });

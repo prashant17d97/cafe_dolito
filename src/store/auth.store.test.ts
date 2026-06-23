@@ -15,5 +15,6 @@ describe("auth.store", () => {
     await auth().login(DEMO_CREDENTIALS.email, DEMO_CREDENTIALS.password);
     auth().logout();
     expect(auth().user).toBeNull();
+    expect(auth().status).toBe("idle");
   });
 });

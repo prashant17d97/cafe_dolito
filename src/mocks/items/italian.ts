@@ -1,5 +1,5 @@
 import type { MenuItem } from "@/types";
-import { makeItem, OPTIONS } from "../factory";
+import { makeItem } from "../factory";
 import { unsplash, IMG } from "../images";
 
 export const ITALIAN_ITEMS: MenuItem[] = [

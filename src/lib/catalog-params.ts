@@ -20,7 +20,8 @@ export function parseProductQuery(sp: URLSearchParams): ProductQuery {
 
 export function toggleCsv(csv: string | undefined, value: string): string {
   const set = new Set((csv ?? "").split(",").map((s) => s.trim()).filter(Boolean));
-  set.has(value) ? set.delete(value) : set.add(value);
+  if (set.has(value)) set.delete(value);
+  else set.add(value);
   return [...set].join(",");
 }
 
