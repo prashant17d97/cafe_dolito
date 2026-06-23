@@ -13,4 +13,8 @@ describe("mock items", () => {
     expect(new Set(ITEMS.map((i) => i.cuisine))).toEqual(new Set(["cafe", "italian", "indian", "fusion"]));
   });
   it("looks items up by slug", () => { expect(getItem(ITEMS[0].slug)?.id).toBe(ITEMS[0].id); });
+  it("has varied ratings and review counts so sorts have signal", () => {
+    expect(new Set(ITEMS.map((i) => i.rating)).size).toBeGreaterThan(6);
+    expect(new Set(ITEMS.map((i) => i.reviewCount)).size).toBeGreaterThan(10);
+  });
 });

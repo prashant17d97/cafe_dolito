@@ -1,5 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest";
-import { reservationService } from "./reservation";
+import { reservationService, ReservationError } from "./reservation";
 
 describe("reservationService", () => {
   beforeEach(() => localStorage.clear());
@@ -21,5 +21,10 @@ describe("reservationService", () => {
     const r = await reservationService.create({ date: "2026-06-23", timeSlot: "19:00", partySize: 2, name: "D", email: "d@e.com", phone: "1" });
     await reservationService.cancel(r.id);
     expect((await reservationService.list())[0].status).toBe("cancelled");
+  });
+  it("rejects a slot outside opening hours", async () => {
+    await expect(
+      reservationService.create({ date: "2026-06-23", timeSlot: "03:00", partySize: 2, name: "D", email: "d@e.com", phone: "1" }),
+    ).rejects.toBeInstanceOf(ReservationError);
   });
 });

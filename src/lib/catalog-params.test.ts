@@ -24,4 +24,10 @@ describe("catalog-params", () => {
     expect(hasActiveFilters({ spiceMax: 2 })).toBe(true);
     expect(hasActiveFilters({ q: "chai" })).toBe(true);
   });
+  it("drops unknown cuisine/dietary values and invalid spiceMax", () => {
+    const q = parseProductQuery(new URLSearchParams("cuisine=indian,garbage&dietary=veg,nonsense&spiceMax=99"));
+    expect(q.cuisine).toEqual(["indian"]);
+    expect(q.dietary).toEqual(["veg"]);
+    expect(q.spiceMax).toBeUndefined();
+  });
 });

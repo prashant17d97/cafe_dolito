@@ -6,6 +6,8 @@ import { withDelay } from "./delay";
 
 const KEY = "cd:reservations";
 
+export class ReservationError extends Error {}
+
 interface CreateReservationInput {
   date: string; timeSlot: string; partySize: number;
   name: string; email: string; phone: string; occasion?: string; notes?: string;
@@ -16,6 +18,10 @@ export const reservationService = {
     return withDelay(generateSlots(SITE.hours, new Date(`${dateIso}T00:00:00`), 30));
   },
   async create(input: CreateReservationInput): Promise<Reservation> {
+    const slots = generateSlots(SITE.hours, new Date(`${input.date}T00:00:00`));
+    if (!slots.includes(input.timeSlot)) {
+      throw new ReservationError("That time slot is not available.");
+    }
     const all = readJSON<Reservation[]>(KEY, []);
     const n = 501 + all.length;
     const reservation: Reservation = {

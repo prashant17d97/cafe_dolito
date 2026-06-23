@@ -34,4 +34,8 @@ describe("menu-query", () => {
     const list = [item({ id: "a", dietary: ["veg", "spicy"] }), item({ id: "b", dietary: ["veg"] })];
     expect(filterItems(list, { dietary: ["veg", "spicy"] }).map((i) => i.id)).toEqual(["a"]);
   });
+  it("excludes unavailable items", () => {
+    const list = [item({ id: "x", available: false }), item({ id: "y" })];
+    expect(filterItems(list, {}).map((i) => i.id)).toEqual(["y"]);
+  });
 });

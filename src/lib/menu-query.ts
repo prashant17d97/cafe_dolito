@@ -4,6 +4,7 @@ export const DEFAULT_PAGE_SIZE = 12;
 
 export function filterItems(items: MenuItem[], q: ProductQuery): MenuItem[] {
   return items.filter((i) => {
+    if (i.available === false) return false;
     if (q.cuisine?.length && !q.cuisine.includes(i.cuisine)) return false;
     if (q.category && i.categorySlug !== q.category) return false;
     if (q.dietary?.length && !q.dietary.every((d) => i.dietary.includes(d))) return false;

@@ -9,6 +9,7 @@ export const BEAN_ITEMS: MenuItem[] = [
     images: [{ src: unsplash(IMG.beans), alt: "House blend espresso beans" }],
     options: [OPTIONS.weight, OPTIONS.grind], dietary: ["vegan", "bestseller"],
     collectionSlugs: ["roasters-picks"],
+    rating: 4.8, reviewCount: 229,
   }),
   makeItem({
     name: "Single Origin Ethiopia Yirgacheffe", cuisine: "cafe", type: "bean", categorySlug: "beans", price: 18,
@@ -16,6 +17,7 @@ export const BEAN_ITEMS: MenuItem[] = [
     images: [{ src: unsplash(IMG.beans), alt: "Ethiopian Yirgacheffe beans" }],
     options: [OPTIONS.weight, OPTIONS.grind], dietary: ["vegan", "chefs-special"],
     collectionSlugs: ["roasters-picks"],
+    rating: 4.9, reviewCount: 117,
   }),
   makeItem({
     name: "Single Origin Colombia Huila", cuisine: "cafe", type: "bean", categorySlug: "beans", price: 17,
@@ -23,6 +25,7 @@ export const BEAN_ITEMS: MenuItem[] = [
     images: [{ src: unsplash(IMG.beans), alt: "Colombia Huila beans" }],
     options: [OPTIONS.weight, OPTIONS.grind], dietary: ["vegan"],
     collectionSlugs: ["roasters-picks"],
+    rating: 4.6, reviewCount: 81,
   }),
   makeItem({
     name: "Decaf Brazil Swiss Water", cuisine: "cafe", type: "bean", categorySlug: "beans", price: 15,
@@ -30,5 +33,6 @@ export const BEAN_ITEMS: MenuItem[] = [
     images: [{ src: unsplash(IMG.beans), alt: "Decaf Brazil beans" }],
     options: [OPTIONS.weight, OPTIONS.grind], dietary: ["vegan"],
     collectionSlugs: ["roasters-picks"],
+    rating: 4.2, reviewCount: 34,
   }),
 ];
