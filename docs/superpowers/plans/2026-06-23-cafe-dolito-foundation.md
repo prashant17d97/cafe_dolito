@@ -212,6 +212,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     globals: true,
+    passWithNoTests: true,
     setupFiles: ["./src/test/setup.ts"],
     css: true,
     include: ["src/**/*.{test,spec}.{ts,tsx}"],
@@ -531,10 +532,9 @@ export default function HomePage() {
 }
 ```
 
-- [ ] **Step 4: Boot the app**
+- [ ] **Step 4: Verify it compiles (non-blocking)**
 
-Run: `pnpm dev`, open `http://localhost:3000`.
-Expected: cream background, espresso heading in Fraunces, coffee-brown pill. No console errors. Stop the server (Ctrl-C).
+The authoritative check is the production build in Step 5. Optionally start the dev server **backgrounded/timeboxed** so it cannot hang a headless run — e.g. `timeout 25 pnpm dev` — and confirm the output reports a successful compile with no errors. Do not block on the long-running server.
 
 - [ ] **Step 5: Production build sanity**
 
