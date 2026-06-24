@@ -9,6 +9,10 @@ export const menuService = {
     const filtered = sortItems(filterItems(ITEMS, query), query.sort);
     return withDelay(paginate(filtered, query.page ?? 1, DEFAULT_PAGE_SIZE));
   },
+  /** All matching items (filtered + sorted), no pagination — for the grouped menu view. */
+  async all(query: ProductQuery): Promise<MenuItem[]> {
+    return withDelay(sortItems(filterItems(ITEMS, query), query.sort));
+  },
   async getBySlug(slug: string): Promise<MenuItem | undefined> {
     return withDelay(getItem(slug));
   },
