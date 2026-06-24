@@ -9,6 +9,7 @@ import { MAIN_NAV } from "@/lib/site";
 import { isActivePath } from "@/lib/navigation";
 import { useUiStore } from "@/store/ui.store";
 import { useCartStore, selectCartCount } from "@/store/cart.store";
+import { useAuthStore } from "@/store/auth.store";
 import { Logo } from "@/components/brand/logo";
 import { Container } from "@/components/common/container";
 import { Button } from "@/components/ui/button";
@@ -20,10 +21,15 @@ export function Navbar() {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const count = useCartStore(selectCartCount);
+  const user = useAuthStore((s) => s.user);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Cart is only offered to signed-in guests. Until hydrated we match the
+  // server (logged-out) to avoid a mismatch, then reveal it for members.
+  const loggedIn = mounted && !!user;
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
@@ -68,24 +74,26 @@ export function Navbar() {
             {/* Account */}
             <AccountMenu />
 
-            {/* Cart */}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Open cart"
-              className="relative min-h-[44px] min-w-[44px]"
-              onClick={() => useUiStore.getState().setCartOpen(true)}
-            >
-              <ShoppingBag className="size-5" />
-              {mounted && count > 0 && (
-                <span
-                  key={count}
-                  className="animate-badge-bounce absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground"
-                >
-                  {count > 99 ? "99+" : count}
-                </span>
-              )}
-            </Button>
+            {/* Cart — members only */}
+            {loggedIn && (
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open cart"
+                className="relative min-h-[44px] min-w-[44px]"
+                onClick={() => useUiStore.getState().setCartOpen(true)}
+              >
+                <ShoppingBag className="size-5" />
+                {count > 0 && (
+                  <span
+                    key={count}
+                    className="animate-badge-bounce absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground"
+                  >
+                    {count > 99 ? "99+" : count}
+                  </span>
+                )}
+              </Button>
+            )}
 
             {/* Mobile nav trigger */}
             <div className="md:hidden">
