@@ -35,6 +35,10 @@ export const reservationService = {
     return withDelay(reservation, 300);
   },
   async list(): Promise<Reservation[]> { return withDelay(readJSON<Reservation[]>(KEY, [])); },
+  async get(id: string): Promise<Reservation | null> {
+    const all = readJSON<Reservation[]>(KEY, []);
+    return withDelay(all.find((r) => r.id === id) ?? null);
+  },
   async cancel(id: string): Promise<void> {
     const all = readJSON<Reservation[]>(KEY, []).map((r) => (r.id === id ? { ...r, status: "cancelled" as const } : r));
     writeJSON(KEY, all);
