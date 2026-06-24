@@ -1,19 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { toast } from "sonner";
 import type { MenuItem } from "@/types";
 import { formatPrice } from "@/lib/format";
 import { buildCartItem } from "@/features/use-cart";
-import { useCartStore } from "@/store/cart.store";
-import { useUiStore } from "@/store/ui.store";
+import { useAddToOrder } from "@/features/use-add-to-order";
 import { QuantityStepper } from "@/components/common/quantity-stepper";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function AddToOrderPanel({ item }: { item: MenuItem }) {
-  const addItem = useCartStore((s) => s.addItem);
-  const setCartOpen = useUiStore((s) => s.setCartOpen);
+  const addToOrder = useAddToOrder();
   const [qty, setQty] = useState(1);
   const [selected, setSelected] = useState<Record<string, string>>(() =>
     Object.fromEntries(item.options.map((o) => [o.id, o.values[0]?.id ?? ""])),
@@ -28,9 +25,7 @@ export function AddToOrderPanel({ item }: { item: MenuItem }) {
   }, [item, selected]);
 
   function add() {
-    addItem(buildCartItem(item, selected, qty));
-    setCartOpen(true);
-    toast.success(`${item.name} added to your order`);
+    addToOrder(buildCartItem(item, selected, qty), item.name);
   }
 
   return (

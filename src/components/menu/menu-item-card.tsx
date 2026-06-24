@@ -3,12 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Plus } from "lucide-react";
-import { toast } from "sonner";
 import type { MenuItem } from "@/types";
 import { formatPrice } from "@/lib/format";
 import { buildCartItem } from "@/features/use-cart";
-import { useCartStore } from "@/store/cart.store";
-import { useUiStore } from "@/store/ui.store";
+import { useAddToOrder } from "@/features/use-add-to-order";
 import { Button } from "@/components/ui/button";
 import { FavoriteButton } from "./favorite-button";
 
@@ -21,15 +19,12 @@ function badgeFor(item: MenuItem): string | null {
 }
 
 export function MenuItemCard({ item }: { item: MenuItem }) {
-  const addItem = useCartStore((s) => s.addItem);
-  const setCartOpen = useUiStore((s) => s.setCartOpen);
+  const addToOrder = useAddToOrder();
   const badge = badgeFor(item);
   const image = item.images[0];
 
   function quickAdd() {
-    addItem(buildCartItem(item));
-    setCartOpen(true);
-    toast.success(`${item.name} added to your order`);
+    addToOrder(buildCartItem(item), item.name);
   }
 
   return (
