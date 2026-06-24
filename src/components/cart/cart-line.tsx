@@ -34,7 +34,7 @@ export function CartLine({ item, onNavigate }: { item: CartItem; onNavigate?: ()
             type="button"
             aria-label={`Remove ${item.name}`}
             onClick={() => remove(item.key)}
-            className="text-muted-foreground transition-colors hover:text-destructive"
+            className="focus-ring rounded-md text-muted-foreground transition-colors hover:text-destructive"
           >
             <X className="size-4" />
           </button>

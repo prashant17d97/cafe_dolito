@@ -33,7 +33,7 @@ export function FavoriteButton({
       aria-pressed={active}
       aria-label={active ? `Remove ${name} from favorites` : `Save ${name} to favorites`}
       className={cn(
-        "flex size-9 items-center justify-center rounded-full bg-card/90 text-foreground shadow-sm backdrop-blur transition-colors hover:text-brand",
+        "focus-ring flex size-9 items-center justify-center rounded-full bg-card/90 text-foreground shadow-sm backdrop-blur transition-colors hover:text-brand",
         className,
       )}
     >

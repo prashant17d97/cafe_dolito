@@ -48,7 +48,7 @@ export function AddToOrderPanel({ item }: { item: MenuItem }) {
                   aria-pressed={active}
                   onClick={() => setSelected((s) => ({ ...s, [opt.id]: v.id }))}
                   className={cn(
-                    "rounded-full border px-4 py-2 text-sm transition-colors",
+                    "focus-ring rounded-full border px-4 py-2 text-sm transition-colors",
                     active
                       ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-foreground hover:border-brand/40 hover:text-brand",

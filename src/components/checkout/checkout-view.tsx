@@ -136,7 +136,7 @@ export function CheckoutView() {
                   onClick={() => setFulfillment(f)}
                   aria-pressed={fulfillment === f}
                   className={cn(
-                    "rounded-xl border px-4 py-3 text-left capitalize transition-colors",
+                    "focus-ring rounded-xl border px-4 py-3 text-left capitalize transition-colors",
                     fulfillment === f ? "border-primary bg-accent/50" : "border-border bg-card hover:border-brand/40",
                   )}
                 >
@@ -224,7 +224,7 @@ export function CheckoutView() {
                   onClick={() => setTipPct(p)}
                   aria-pressed={tipPct === p}
                   className={cn(
-                    "flex-1 rounded-full border py-1.5 text-sm transition-colors",
+                    "focus-ring flex-1 rounded-full border py-1.5 text-sm transition-colors",
                     tipPct === p ? "border-primary bg-primary text-primary-foreground" : "border-border hover:border-brand/40",
                   )}
                 >

@@ -172,7 +172,7 @@ export function ReserveView() {
                     onClick={() => setTimeSlot(s)}
                     aria-pressed={timeSlot === s}
                     className={cn(
-                      "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                      "focus-ring rounded-full border px-3.5 py-1.5 text-sm transition-colors",
                       timeSlot === s
                         ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-foreground hover:border-brand/40 hover:text-brand",

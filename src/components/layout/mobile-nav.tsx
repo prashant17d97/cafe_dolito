@@ -101,7 +101,7 @@ export function MobileNav() {
               </Link>
             ))}
             {loggedIn && (
-              <button type="button" onClick={signOut} className="flex min-h-[44px] items-center rounded-md px-3 text-left text-sm text-destructive transition-colors hover:bg-destructive/10">
+              <button type="button" onClick={signOut} className="focus-ring flex min-h-[44px] items-center rounded-md px-3 text-left text-sm text-destructive transition-colors hover:bg-destructive/10">
                 Sign out
               </button>
             )}

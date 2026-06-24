@@ -61,7 +61,7 @@ export function LoginForm() {
           <Button type="submit" className="w-full" size="lg" disabled={pending}>{pending ? "Signing in…" : "Sign in"}</Button>
         </form>
 
-        <button type="button" onClick={fillDemo} className="mt-4 w-full rounded-lg border border-dashed border-border bg-card/50 px-4 py-3 text-left text-xs text-muted-foreground transition-colors hover:border-brand/40">
+        <button type="button" onClick={fillDemo} className="focus-ring mt-4 w-full rounded-lg border border-dashed border-border bg-card/50 px-4 py-3 text-left text-xs text-muted-foreground transition-colors hover:border-brand/40">
           <span className="font-mono uppercase tracking-wider text-brand">Demo account</span> — tap to fill {DEMO_CREDENTIALS.email} / {DEMO_CREDENTIALS.password}
         </button>
 

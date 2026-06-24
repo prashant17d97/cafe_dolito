@@ -62,7 +62,7 @@ export function MenuToolbar() {
         onClick={onClick}
         aria-pressed={active}
         className={cn(
-          "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+          "focus-ring rounded-full border px-3.5 py-1.5 text-sm transition-colors",
           active
             ? "border-primary bg-primary text-primary-foreground"
             : "border-border bg-card text-foreground hover:border-brand/40 hover:text-brand",
@@ -124,7 +124,7 @@ export function MenuToolbar() {
                 setTerm("");
                 push(new URLSearchParams());
               }}
-              className="flex items-center gap-1 text-sm text-brand hover:text-foreground"
+              className="focus-ring flex items-center gap-1 rounded-md px-1 text-sm text-brand hover:text-foreground"
             >
               <X className="size-3.5" /> Clear
             </button>
