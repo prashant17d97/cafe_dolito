@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Search, User, ShoppingBag } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
 
 import { MAIN_NAV } from "@/lib/site";
 import { isActivePath } from "@/lib/navigation";
@@ -14,6 +14,7 @@ import { Container } from "@/components/common/container";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { MobileNav } from "./mobile-nav";
+import { AccountMenu } from "./account-menu";
 
 export function Navbar() {
   const pathname = usePathname();
@@ -65,17 +66,7 @@ export function Navbar() {
             </Button>
 
             {/* Account */}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label="Account"
-              className="min-h-[44px] min-w-[44px]"
-              asChild
-            >
-              <Link href="/account">
-                <User className="size-5" />
-              </Link>
-            </Button>
+            <AccountMenu />
 
             {/* Cart */}
             <Button
