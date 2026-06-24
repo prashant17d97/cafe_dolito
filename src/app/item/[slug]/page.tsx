@@ -9,6 +9,8 @@ import { CATEGORIES } from "@/mocks/categories";
 import { formatPrice } from "@/lib/format";
 import { Container } from "@/components/common/container";
 import { AddToOrderPanel } from "@/components/item/add-to-order-panel";
+import { FavoriteButton } from "@/components/menu/favorite-button";
+import { RecentlyViewed } from "@/components/item/recently-viewed";
 import { MenuItemCard } from "@/components/menu/menu-item-card";
 
 type Params = Promise<{ slug: string }>;
@@ -46,6 +48,7 @@ export default async function ItemPage({ params }: { params: Params }) {
             {image && (
               <Image src={image.src} alt={image.alt} fill priority sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />
             )}
+            <FavoriteButton itemId={item.id} name={item.name} className="absolute right-4 top-4 size-11" />
           </div>
 
           <div className="flex flex-col">
@@ -85,6 +88,8 @@ export default async function ItemPage({ params }: { params: Params }) {
             </div>
           </section>
         )}
+
+        <RecentlyViewed currentId={item.id} />
       </Container>
     </div>
   );

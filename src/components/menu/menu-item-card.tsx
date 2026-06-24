@@ -10,6 +10,7 @@ import { buildCartItem } from "@/features/use-cart";
 import { useCartStore } from "@/store/cart.store";
 import { useUiStore } from "@/store/ui.store";
 import { Button } from "@/components/ui/button";
+import { FavoriteButton } from "./favorite-button";
 
 function badgeFor(item: MenuItem): string | null {
   if (item.dietary.includes("chefs-special")) return "Chef's special";
@@ -32,7 +33,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
   }
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-shadow hover:shadow-md">
       <Link href={`/item/${item.slug}`} className="relative block aspect-[4/3] overflow-hidden">
         {image && (
           <Image
@@ -49,6 +50,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           </span>
         )}
       </Link>
+      <FavoriteButton itemId={item.id} name={item.name} className="absolute right-3 top-3" />
       <div className="flex flex-1 flex-col gap-1.5 p-4">
         <Link href={`/item/${item.slug}`}>
           <h3 className="font-display text-lg font-semibold leading-snug text-foreground transition-colors group-hover:text-brand">
