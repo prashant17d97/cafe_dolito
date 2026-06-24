@@ -82,7 +82,7 @@ export function AuthField({
   return (
     <div className={cn("space-y-1.5")}>
       <label htmlFor={name} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{label}</label>
-      <Input id={name} name={name} type={type} value={value} autoComplete={autoComplete} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
+      <Input id={name} name={name} type={type} value={value} autoComplete={autoComplete} inputMode={type === "email" ? "email" : type === "tel" ? "tel" : undefined} aria-invalid={!!error} onChange={(e) => onChange(e.target.value)} />
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

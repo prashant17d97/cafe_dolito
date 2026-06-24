@@ -42,6 +42,7 @@ function Field({
         type={type}
         value={value}
         autoComplete={autoComplete}
+        inputMode={type === "tel" ? "tel" : type === "email" ? "email" : undefined}
         placeholder={placeholder}
         aria-invalid={!!error}
         onChange={(e) => onChange(e.target.value)}

@@ -18,10 +18,11 @@ import { cn } from "@/lib/utils";
 const PICKUP_SLOTS = ["As soon as possible (~20 min)", "In 30 minutes", "In 45 minutes", "In 1 hour"];
 
 function Field({
-  label, name, value, onChange, errors, type = "text", placeholder, autoComplete, className,
+  label, name, value, onChange, errors, type = "text", placeholder, autoComplete, inputMode, className,
 }: {
   label: string; name: string; value: string; onChange: (v: string) => void;
-  errors: Record<string, string>; type?: string; placeholder?: string; autoComplete?: string; className?: string;
+  errors: Record<string, string>; type?: string; placeholder?: string; autoComplete?: string;
+  inputMode?: React.ComponentProps<"input">["inputMode"]; className?: string;
 }) {
   const error = errors[name];
   return (
@@ -33,6 +34,7 @@ function Field({
         type={type}
         value={value}
         autoComplete={autoComplete}
+        inputMode={inputMode ?? (type === "tel" ? "tel" : type === "email" ? "email" : undefined)}
         placeholder={placeholder}
         aria-invalid={!!error}
         onChange={(e) => onChange(e.target.value)}
@@ -179,8 +181,8 @@ export function CheckoutView() {
                 <Field label="Apt, suite (optional)" name="line2" value={address.line2} onChange={(v) => setAddress((a) => ({ ...a, line2: v }))} errors={errors} className="sm:col-span-2" />
                 <Field label="City" name="city" value={address.city} onChange={(v) => setAddress((a) => ({ ...a, city: v }))} errors={errors} autoComplete="address-level2" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="State" name="state" value={address.state} onChange={(v) => setAddress((a) => ({ ...a, state: v }))} errors={errors} />
-                  <Field label="ZIP" name="zip" value={address.zip} onChange={(v) => setAddress((a) => ({ ...a, zip: v }))} errors={errors} />
+                  <Field label="State" name="state" value={address.state} onChange={(v) => setAddress((a) => ({ ...a, state: v }))} errors={errors} autoComplete="address-level1" />
+                  <Field label="ZIP" name="zip" value={address.zip} onChange={(v) => setAddress((a) => ({ ...a, zip: v }))} errors={errors} inputMode="numeric" autoComplete="postal-code" />
                 </div>
               </div>
             </section>
@@ -192,9 +194,9 @@ export function CheckoutView() {
             <p className="mt-1 text-xs text-muted-foreground">Demo only — no real card is charged or stored.</p>
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
               <Field label="Name on card" name="cardName" value={payment.cardName} onChange={(v) => setPayment((p) => ({ ...p, cardName: v }))} errors={errors} className="sm:col-span-2" />
-              <Field label="Card number" name="cardNumber" value={payment.cardNumber} onChange={(v) => setPayment((p) => ({ ...p, cardNumber: v }))} errors={errors} placeholder="4242 4242 4242 4242" className="sm:col-span-2" />
-              <Field label="Expiry (MM/YY)" name="expiry" value={payment.expiry} onChange={(v) => setPayment((p) => ({ ...p, expiry: v }))} errors={errors} placeholder="08/27" />
-              <Field label="CVC" name="cvc" value={payment.cvc} onChange={(v) => setPayment((p) => ({ ...p, cvc: v }))} errors={errors} placeholder="123" />
+              <Field label="Card number" name="cardNumber" value={payment.cardNumber} onChange={(v) => setPayment((p) => ({ ...p, cardNumber: v }))} errors={errors} inputMode="numeric" autoComplete="cc-number" placeholder="4242 4242 4242 4242" className="sm:col-span-2" />
+              <Field label="Expiry (MM/YY)" name="expiry" value={payment.expiry} onChange={(v) => setPayment((p) => ({ ...p, expiry: v }))} errors={errors} inputMode="numeric" autoComplete="cc-exp" placeholder="08/27" />
+              <Field label="CVC" name="cvc" value={payment.cvc} onChange={(v) => setPayment((p) => ({ ...p, cvc: v }))} errors={errors} inputMode="numeric" autoComplete="cc-csc" placeholder="123" />
             </div>
           </section>
         </div>
