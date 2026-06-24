@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fraunces, Manrope, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Providers } from "@/components/providers/providers";
+import { SiteShell } from "@/components/layout/site-shell";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -32,7 +34,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       lang="en"
       className={`${fraunces.variable} ${manrope.variable} ${geistMono.variable} h-full`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+          <Providers>
+            <SiteShell>{children}</SiteShell>
+          </Providers>
+        </body>
     </html>
   );
 }
