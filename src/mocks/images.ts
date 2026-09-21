@@ -5,8 +5,6 @@ export function unsplash(id: string, w = 1200): string {
 
 // Curated coffee/Italian/Indian photo ids (swap freely — single source of truth).
 export const IMG = {
-  heroBackplate: "photo-1453614512568-c4024d13c247",
-  heroJar: "photo-1610889556528-9a770e32642f",
   beans: "photo-1559056199-641a0ac8b55e",
   espresso: "photo-1510707577719-ae7c14805e3a",
   latte: "photo-1541167760496-1628856ab772",

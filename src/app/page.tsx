@@ -1,7 +1,7 @@
 import { menuService } from "@/services/menu";
 import { reviewService } from "@/services/review";
 import { Reveal } from "@/components/common/reveal";
-import { HeroParallax } from "@/components/home/hero-parallax";
+import { Tour } from "@/components/home/tour/tour";
 import { TrustMarquee } from "@/components/home/trust-marquee";
 import { CuisineGrid } from "@/components/home/cuisine-grid";
 import { FusionCarousel } from "@/components/home/fusion-carousel";
@@ -20,8 +20,10 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* Brand-promotion hero — alive on scroll. Carries the single <h1>. */}
-      <HeroParallax />
+      {/* The café tour — five pinned scenes. Carries the single <h1>. */}
+      <Tour />
+
+      <div id="after-tour" tabIndex={-1} className="outline-none" />
 
       <TrustMarquee />
 
