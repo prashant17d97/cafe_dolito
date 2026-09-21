@@ -8,6 +8,7 @@ import type { Fulfillment } from "@/types";
 import { useCart } from "@/features/use-cart";
 import { calcTotals, PROMO_CODES, TIP_PRESETS } from "@/lib/pricing";
 import { contactSchema, addressSchema, paymentSchema } from "@/lib/validation/checkout";
+import { formatCardNumber, formatExpiry, formatName, formatPhone } from "@/lib/validation/patterns";
 import { orderService } from "@/services/order";
 import { formatPrice } from "@/lib/format";
 import { Container } from "@/components/common/container";
@@ -17,17 +18,19 @@ import { cn } from "@/lib/utils";
 
 const PICKUP_SLOTS = ["As soon as possible (~20 min)", "In 30 minutes", "In 45 minutes", "In 1 hour"];
 
+const LABEL = "block font-mono text-xs uppercase tracking-wider text-muted-foreground";
+
 function Field({
-  label, name, value, onChange, errors, type = "text", placeholder, autoComplete, inputMode, className,
+  label, name, value, onChange, onBlur, errors, type = "text", placeholder, autoComplete, inputMode, maxLength, className,
 }: {
-  label: string; name: string; value: string; onChange: (v: string) => void;
+  label: string; name: string; value: string; onChange: (v: string) => void; onBlur?: () => void;
   errors: Record<string, string>; type?: string; placeholder?: string; autoComplete?: string;
-  inputMode?: React.ComponentProps<"input">["inputMode"]; className?: string;
+  inputMode?: React.ComponentProps<"input">["inputMode"]; maxLength?: number; className?: string;
 }) {
   const error = errors[name];
   return (
     <div className={cn("space-y-1.5", className)}>
-      <label htmlFor={name} className="font-mono text-xs uppercase tracking-wider text-muted-foreground">{label}</label>
+      <label htmlFor={name} className={LABEL}>{label}</label>
       <Input
         id={name}
         name={name}
@@ -36,13 +39,18 @@ function Field({
         autoComplete={autoComplete}
         inputMode={inputMode ?? (type === "tel" ? "tel" : type === "email" ? "email" : undefined)}
         placeholder={placeholder}
+        maxLength={maxLength}
         aria-invalid={!!error}
+        aria-describedby={error ? `${name}-error` : undefined}
         onChange={(e) => onChange(e.target.value)}
+        onBlur={onBlur}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p id={`${name}-error`} className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
+
+type Schema = typeof contactSchema | typeof addressSchema | typeof paymentSchema;
 
 export function CheckoutView() {
   const router = useRouter();
@@ -81,13 +89,20 @@ export function CheckoutView() {
     }
   }
 
-  function collect(
-    schema: typeof contactSchema | typeof addressSchema | typeof paymentSchema,
-    data: unknown,
-    errs: Record<string, string>,
-  ) {
+  function collect(schema: Schema, data: unknown, errs: Record<string, string>) {
     const r = schema.safeParse(data);
     if (!r.success) for (const issue of r.error.issues) errs[String(issue.path[0])] = issue.message;
+  }
+
+  /** Validate one field on blur; sets or clears just that field's error. */
+  function blur(schema: Schema, data: unknown, name: string) {
+    const errs: Record<string, string> = {};
+    collect(schema, data, errs);
+    setErrors((e) => {
+      const next = { ...e };
+      if (errs[name]) next[name] = errs[name]; else delete next[name];
+      return next;
+    });
   }
 
   async function placeOrder() {
@@ -149,12 +164,12 @@ export function CheckoutView() {
             </div>
             {fulfillment === "pickup" && (
               <div className="mt-4 space-y-1.5">
-                <label htmlFor="slot" className="font-mono text-xs uppercase tracking-wider text-muted-foreground">Pickup time</label>
+                <label htmlFor="slot" className={LABEL}>Pickup time</label>
                 <select
                   id="slot"
                   value={slot}
                   onChange={(e) => setSlot(e.target.value)}
-                  className="h-10 w-full rounded-md border border-border bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring sm:w-72"
+                  className="h-8 w-full rounded-lg border border-input bg-transparent px-2.5 text-base outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 sm:w-72 md:text-sm"
                 >
                   {PICKUP_SLOTS.map((s) => <option key={s} value={s}>{s}</option>)}
                 </select>
@@ -166,9 +181,9 @@ export function CheckoutView() {
           <section>
             <h2 className="font-display text-lg font-semibold text-foreground">Your details</h2>
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
-              <Field label="Name" name="name" value={contact.name} onChange={(v) => setContact((c) => ({ ...c, name: v }))} errors={errors} autoComplete="name" className="sm:col-span-2" />
-              <Field label="Email" name="email" type="email" value={contact.email} onChange={(v) => setContact((c) => ({ ...c, email: v }))} errors={errors} autoComplete="email" />
-              <Field label="Phone" name="phone" type="tel" value={contact.phone} onChange={(v) => setContact((c) => ({ ...c, phone: v }))} errors={errors} autoComplete="tel" />
+              <Field label="Name" name="name" value={contact.name} onChange={(v) => setContact((c) => ({ ...c, name: formatName(v) }))} onBlur={() => blur(contactSchema, contact, "name")} errors={errors} autoComplete="name" className="sm:col-span-2" />
+              <Field label="Email" name="email" type="email" value={contact.email} onChange={(v) => setContact((c) => ({ ...c, email: v }))} onBlur={() => blur(contactSchema, contact, "email")} errors={errors} autoComplete="email" />
+              <Field label="Phone" name="phone" type="tel" value={contact.phone} onChange={(v) => setContact((c) => ({ ...c, phone: formatPhone(v) }))} onBlur={() => blur(contactSchema, contact, "phone")} errors={errors} autoComplete="tel" />
             </div>
           </section>
 
@@ -177,12 +192,12 @@ export function CheckoutView() {
             <section>
               <h2 className="font-display text-lg font-semibold text-foreground">Delivery address</h2>
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
-                <Field label="Address" name="line1" value={address.line1} onChange={(v) => setAddress((a) => ({ ...a, line1: v }))} errors={errors} autoComplete="address-line1" className="sm:col-span-2" />
-                <Field label="Apt, suite (optional)" name="line2" value={address.line2} onChange={(v) => setAddress((a) => ({ ...a, line2: v }))} errors={errors} className="sm:col-span-2" />
-                <Field label="City" name="city" value={address.city} onChange={(v) => setAddress((a) => ({ ...a, city: v }))} errors={errors} autoComplete="address-level2" />
+                <Field label="Address" name="line1" value={address.line1} onChange={(v) => setAddress((a) => ({ ...a, line1: v }))} onBlur={() => blur(addressSchema, address, "line1")} errors={errors} autoComplete="address-line1" className="sm:col-span-2" />
+                <Field label="Apt, suite (optional)" name="line2" value={address.line2} onChange={(v) => setAddress((a) => ({ ...a, line2: v }))} onBlur={() => blur(addressSchema, address, "line2")} errors={errors} className="sm:col-span-2" />
+                <Field label="City" name="city" value={address.city} onChange={(v) => setAddress((a) => ({ ...a, city: v }))} onBlur={() => blur(addressSchema, address, "city")} errors={errors} autoComplete="address-level2" />
                 <div className="grid grid-cols-2 gap-4">
-                  <Field label="State" name="state" value={address.state} onChange={(v) => setAddress((a) => ({ ...a, state: v }))} errors={errors} autoComplete="address-level1" />
-                  <Field label="ZIP" name="zip" value={address.zip} onChange={(v) => setAddress((a) => ({ ...a, zip: v }))} errors={errors} inputMode="numeric" autoComplete="postal-code" />
+                  <Field label="State" name="state" value={address.state} onChange={(v) => setAddress((a) => ({ ...a, state: v }))} onBlur={() => blur(addressSchema, address, "state")} errors={errors} autoComplete="address-level1" />
+                  <Field label="ZIP" name="zip" value={address.zip} onChange={(v) => setAddress((a) => ({ ...a, zip: v }))} onBlur={() => blur(addressSchema, address, "zip")} errors={errors} inputMode="numeric" autoComplete="postal-code" />
                 </div>
               </div>
             </section>
@@ -193,10 +208,10 @@ export function CheckoutView() {
             <h2 className="font-display text-lg font-semibold text-foreground">Payment</h2>
             <p className="mt-1 text-xs text-muted-foreground">Demo only — no real card is charged or stored.</p>
             <div className="mt-3 grid gap-4 sm:grid-cols-2">
-              <Field label="Name on card" name="cardName" value={payment.cardName} onChange={(v) => setPayment((p) => ({ ...p, cardName: v }))} errors={errors} className="sm:col-span-2" />
-              <Field label="Card number" name="cardNumber" value={payment.cardNumber} onChange={(v) => setPayment((p) => ({ ...p, cardNumber: v }))} errors={errors} inputMode="numeric" autoComplete="cc-number" placeholder="4242 4242 4242 4242" className="sm:col-span-2" />
-              <Field label="Expiry (MM/YY)" name="expiry" value={payment.expiry} onChange={(v) => setPayment((p) => ({ ...p, expiry: v }))} errors={errors} inputMode="numeric" autoComplete="cc-exp" placeholder="08/27" />
-              <Field label="CVC" name="cvc" value={payment.cvc} onChange={(v) => setPayment((p) => ({ ...p, cvc: v }))} errors={errors} inputMode="numeric" autoComplete="cc-csc" placeholder="123" />
+              <Field label="Name on card" name="cardName" value={payment.cardName} onChange={(v) => setPayment((p) => ({ ...p, cardName: formatName(v) }))} onBlur={() => blur(paymentSchema, payment, "cardName")} errors={errors} className="sm:col-span-2" />
+              <Field label="Card number" name="cardNumber" value={payment.cardNumber} onChange={(v) => setPayment((p) => ({ ...p, cardNumber: formatCardNumber(v) }))} onBlur={() => blur(paymentSchema, payment, "cardNumber")} errors={errors} maxLength={23} inputMode="numeric" autoComplete="cc-number" placeholder="4242 4242 4242 4242" className="sm:col-span-2" />
+              <Field label="Expiry (MM/YY)" name="expiry" value={payment.expiry} onChange={(v) => setPayment((p) => ({ ...p, expiry: formatExpiry(v) }))} onBlur={() => blur(paymentSchema, payment, "expiry")} errors={errors} maxLength={5} inputMode="numeric" autoComplete="cc-exp" placeholder="08/27" />
+              <Field label="CVC" name="cvc" value={payment.cvc} onChange={(v) => setPayment((p) => ({ ...p, cvc: v.replace(/\D/g, "").slice(0, 4) }))} onBlur={() => blur(paymentSchema, payment, "cvc")} errors={errors} maxLength={4} inputMode="numeric" autoComplete="cc-csc" placeholder="123" />
             </div>
           </section>
         </div>

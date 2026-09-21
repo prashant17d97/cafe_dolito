@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PATTERNS, digitCount, nameSchema, emailSchema, phoneSchema, zipSchema } from "./patterns";
+import { PATTERNS, digitCount, expiryNotPast, formatCardNumber, formatExpiry, formatName, formatPhone, luhnValid, nameSchema, emailSchema, phoneSchema, zipSchema } from "./patterns";
 
 describe("validation patterns", () => {
   it("accepts valid phone numbers", () => {
@@ -53,5 +53,38 @@ describe("validation patterns", () => {
     expect(PATTERNS.expiry.test("13/27")).toBe(false);
     expect(PATTERNS.cvc.test("123")).toBe(true);
     expect(PATTERNS.cvc.test("12")).toBe(false);
+  });
+
+  it("formats card number and expiry as you type", () => {
+    expect(formatCardNumber("4242424242424242")).toBe("4242 4242 4242 4242");
+    expect(formatCardNumber("4242-4242 42ab")).toBe("4242 4242 42");
+    expect(formatCardNumber("1".repeat(25))).toBe("1111 1111 1111 1111 111");
+    expect(formatExpiry("0827")).toBe("08/27");
+    expect(formatExpiry("08")).toBe("08");
+    expect(formatExpiry("08/2")).toBe("08/2");
+    expect(formatExpiry("9")).toBe("09");
+    expect(formatExpiry("13")).toBe("1");
+    expect(formatExpiry("00")).toBe("0");
+    expect(formatExpiry("12")).toBe("12");
+    expect(formatExpiry("1327")).toBe("1");
+  });
+
+  it("formats phone as digits only and capitalises names", () => {
+    expect(formatPhone("+1 (503) 555-0142abc")).toBe("15035550142");
+    expect(formatPhone("1".repeat(20))).toBe("1".repeat(15));
+    expect(formatName("marco rossi")).toBe("Marco Rossi");
+    expect(formatName("jean-luc o'brien")).toBe("Jean-Luc O'Brien");
+    expect(formatName("McDonald")).toBe("McDonald");
+    expect(formatName("maría josé")).toBe("María José");
+  });
+
+  it("checks luhn and expiry date", () => {
+    expect(luhnValid("4242 4242 4242 4242")).toBe(true);
+    expect(luhnValid("4242 4242 4242 4241")).toBe(false);
+    expect(luhnValid("")).toBe(false);
+    const now = new Date(2026, 8, 21);
+    expect(expiryNotPast("09/26", now)).toBe(true);
+    expect(expiryNotPast("08/26", now)).toBe(false);
+    expect(expiryNotPast("01/27", now)).toBe(true);
   });
 });
